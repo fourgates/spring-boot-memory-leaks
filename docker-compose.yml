@@ -1,0 +1,21 @@
+version: '3.7'
+services:
+  profile:
+    image: fourgates/mem-leak-builder
+    container_name: mem-container
+    ports:
+      - '8080:8080'
+      - '9010:9010'
+    volumes:
+      - './pom.xml:/build/pom.xml'
+      - './src:/build/src'
+      - './db:/build/db'
+      - './target:/build/target'
+      - './logs:/build/logs'
+    command: 'mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.rmi.port=9010 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost"'
+  maven:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fourgates/mem-leak-builder
+    container_name: maven-container
